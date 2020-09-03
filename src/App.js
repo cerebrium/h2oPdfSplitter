@@ -1,42 +1,26 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import './App.scss';
 import XLSX from 'xlsx';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import axios from 'axios'
+import { Button } from '@material-ui/core';
 
 var objectForDownload = null
 var arrayForDownload = []
-var finalArrayDownload = []
-var outsideArrayOfUrl = []
-
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
-// ALEKSANDAR TOTEV WEEK 35 INV 6438 DSN1
 
 function App() {
   const [ arrayOfData, setArrayOfData ] = useState([])
   const [ displayArray, setDisplayArray ] = useState([])
-  const [ numPages, setNumPages ] = useState(null);
-  const [ pageNumber, setPageNumber ] = useState(1);
-  const [ pdfFile, setPdfFile ] = useState(null)
-  const [ downloadButton, setDownloadButton ] = useState(null)
   const [ arrayForDownloading, setArrayForDownloading ] = useState([])
   const [ objectForDownloading, setObjectForDownloading ] = useState(null)
   const [ downloadGate, setDownloadGate ] = useState(false)
-  const [ secondDownloadGate, setSecondDownloadGate ] = useState(false)
   const [ arrayOfUrl, setArrayOfUrl ] = useState([])
   const [ displayArrayOfUrl, SetDisplayArrayOfUrl ] = useState([])
+  const [ blockerDiv, setBlockerDiv ] = useState(null)
+  const [ blockerDivGate, setBlockerDivGate ] = useState(true)
+  const [ loader, setLoader ] = useState(null)
+  const [ loadGate, setLoadGate ] = useState(0)
+  const [ inputLabel, setInputLabel ] = useState('Select a Spreadsheet')
 
   // pdf part
   const handleUploadpdf = (e) => {
@@ -52,9 +36,27 @@ function App() {
           arrayForDownload = response.data.Files
         }
       }) 
-      // setPdfFile(e.target.files[0])
     }
   }
+
+  useEffect( () => {
+    if (blockerDivGate) {
+      setBlockerDiv(
+        null
+      )
+    } else {
+      setBlockerDiv(
+        <form className='forms'>
+          <h3 className='innerLabel'>
+            Input Pdf
+          </h3>
+          <div>
+            <input type="file" name="file" placeholder="Upload an image" className='inputButton' onChange={(e) => handleUploadpdf(e)}/>
+          </div>
+        </form>
+      )
+    }
+  }, [blockerDivGate])
 
   // spreadsheet part
   useEffect( () => {
@@ -82,10 +84,11 @@ function App() {
     setDisplayArray(displayArray)
     setObjectForDownloading(finishedObject)
     objectForDownload = finishedObject
-    if (finishedObject !== null) {
+    if (Object.keys(finishedObject).length > 0) {
+      setInputLabel('Spreadsheet Selected')
+      setBlockerDivGate(false)
       setDownloadGate(true)
     }
-    console.log(finishedObject)
   }, [arrayOfData])
 
   // handles grabbing the excel data and throws it into an array
@@ -112,10 +115,6 @@ function App() {
     reader.readAsBinaryString(file);
   }
 
-  useEffect( () => {
-    console.log(arrayOfUrl)
-  }, [arrayOfUrl])
-
   // get the pdf after they are split
   useEffect( () => {
     async function getData(url = '') {
@@ -123,6 +122,7 @@ function App() {
       return bloby ? bloby : console.log('no reponse')
     };
     if (arrayForDownloading.length > 0) {
+      setLoadGate(2)
       async function loopData(localArray) {
         let finalArray = []
         let localArrayOfNames = []
@@ -138,6 +138,7 @@ function App() {
                 <a 
                   href={interestingBlob}
                   download={localArrayOfNames[pdfLocalId]}
+                  className='hyperLinkStyle'
                 >
                   {localArrayOfNames[pdfLocalId]}
                 </a>
@@ -146,6 +147,7 @@ function App() {
         })
         console.log(localArrayOfNames, finalArray)
         setTimeout(() => {
+          setLoadGate(1)
           SetDisplayArrayOfUrl(finalArray)
         }, 4000);
         return finalArray
@@ -156,24 +158,61 @@ function App() {
     }
   }, [arrayForDownloading])
 
+  useEffect( () => {
+    if (loadGate === 2) {
+      setLoader(
+        <div className='loadContainer'>
+          <div id="container">
+            <div className="divider" aria-hidden="true"></div>
+            <p className="loading-text" aria-label="Loading">
+              <span className="letter" aria-hidden="true">L</span>
+              <span className="letter" aria-hidden="true">o</span>
+              <span className="letter" aria-hidden="true">a</span>
+              <span className="letter" aria-hidden="true">d</span>
+              <span className="letter" aria-hidden="true">i</span>
+              <span className="letter" aria-hidden="true">n</span>
+              <span className="letter" aria-hidden="true">g</span>
+            </p>
+          </div>
+        </div>
+      )
+    } else if (loadGate === 1) {
+      setLoader(
+        <div className='pdfDownloadContainer'>
+          <h3 className='innerLabel'>
+            Renamed Pdfs
+          </h3>
+          {displayArrayOfUrl}
+        </div>
+      )
+    } else {
+      setLoader(null)
+    }
+  }, [displayArrayOfUrl, loadGate])
+
   return (
     <div className="App">
-      <div className='container'>
-        <div>
-          <form className='form_on_document_page'>
-              <div className='enter_information_documents'>
-                <input type="file" name="file" placeholder="Upload an image" className='document_input_forms_top' onChange={(e) => handleUpload(e)}/>
+      <div className='whiteOverlay'>
+        <div className='containerOne'>
+          <h1 className='mainTitle'>H2O Pdf Splitter</h1>
+          <div className='inputContainer'>
+            <form className='forms'>
+              <h3 className='innerLabel'>
+                {inputLabel}
+              </h3>
+              <div>
+                <input 
+                  type="file" 
+                  name="file" 
+                  placeholder="Upload Spreadsheet" 
+                  className='inputButton' 
+                  onChange={(e) => handleUpload(e)}
+                />
               </div>
-          </form>
-        </div>
-        <form className='form_on_document_page'>
-            <div className='enter_information_documents'>
-              <input type="file" name="file" placeholder="Upload an image" className='document_input_forms_top' onChange={(e) => handleUploadpdf(e)}/>
-            </div>
-        </form>
-        <div className='pdfDownloadContainer'>
-          {displayArrayOfUrl}
-
+            </form>
+            {blockerDiv}
+          </div>
+          {loader}
         </div>
       </div>
     </div>
