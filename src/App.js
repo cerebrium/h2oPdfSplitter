@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import XLSX from 'xlsx';
 import axios from 'axios'
-import { Button } from '@material-ui/core';
 
 var objectForDownload = null
 var arrayForDownload = []
@@ -21,6 +20,122 @@ function App() {
   const [ loader, setLoader ] = useState(null)
   const [ loadGate, setLoadGate ] = useState(0)
   const [ inputLabel, setInputLabel ] = useState('Select a Spreadsheet')
+
+  // let arrayMock = [
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  //   <a className='hyperLinkStyle'>sryaskldn;askldnf;laksd</a>,
+  // ]
+
+  // useEffect( () => {
+  //   SetDisplayArrayOfUrl(arrayMock)
+  // }, [])
 
   // pdf part
   const handleUploadpdf = (e) => {
@@ -140,7 +255,7 @@ function App() {
                   download={localArrayOfNames[pdfLocalId]}
                   className='hyperLinkStyle'
                 >
-                  {localArrayOfNames[pdfLocalId]}
+                  {pdfLocalId+1}: {localArrayOfNames[pdfLocalId]}
                 </a>
               )
           })
