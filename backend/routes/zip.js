@@ -48,48 +48,6 @@ let testerArray = [
 
 // basic get route that tells you what to do
 router.get('/', function(req, res) {
-    // async function renameAndZip (nameAttay, pdfArray) {
-    //     var zip = new JSZip();
-    //     var pdfZip = zip.folder('pdfs')
-        
-    //     let getData = async function(urlNum, url) {
-    //         await fetch(url).then( response => response.blob()).then( response => response.arrayBuffer()).then( response => {
-    //             pdfZip.file(`${nameAttay[urlNum]}.pdf`, response, {base64: true})
-    //             try {
-    //                 pdfZip.generateNodeStream({
-    //                     type:'nodebuffer',
-    //                     streamFiles:true
-    //                 })
-    //                     .pipe(
-    //                         fs.createWriteStream('pdfs.zip')
-    //                         )
-    //                     .on('finish', function () {
-    //                         // JSZip generates a readable stream with a "end" event,
-    //                         // but is piped here in a writable stream which emits a "finish" event.
-                            
-    //                     });
-    //             } catch (error) {
-    //                 console.log(error)
-    //             }
-    //         })
-    //     }
-
-    //     pdfArray.forEach( (pdf, pdfnum) => {
-    //         getData(pdfnum, pdf)
-    //     })
-    //     setTimeout( () => {
-    //         // trying to send the zip
-    
-    //         res.sendFile(pathToPdf)
-    //         // res.send('hello')
-    
-    //         // res.status(200).sendFile(pathToPdf, options)
-    //         console.log('file is sent')
-    //     }, 5000)
-    // }
-    // renameAndZip(namesArray, testerArray)
-    // // function for renaming and zipping
-    // // res.status(200).send("I exist")
     let pathToPdf = path.join(__dirname, '/../pdfs.zip')
     res.sendFile(pathToPdf)
 })
