@@ -23,8 +23,10 @@ function App() {
 
   // wake up the backend
   useEffect( () => {
-    axios.get('https://arcane-brook-64097.herokuapp.com/').then( response => {
-
+    axios.get('http://localhost:3001/').then( response => {
+      if (response.data) {
+        console.log(response.data)
+      }
     })
   }, [])
 
@@ -72,6 +74,7 @@ function App() {
       arrayOfData.forEach( (row, rowId) => {
         if (rowId !== 0) {
           let tempArray = row.match(/\S[^,]+/g)
+          console.log(tempArray)
           if (tempArray) {
             finishedObject[tempArray[0]] = tempArray[1].replace(/,/, '')
           }
@@ -115,7 +118,7 @@ function App() {
         /* Update state */
         // console.log(typeof data)
         // console.log("Data>>>"+data);
-        let myArray = data.split('Draft')
+        let myArray = data.split('Awaiting Payment')
         setArrayOfData(myArray)
     };
     reader.readAsBinaryString(file);
@@ -158,7 +161,6 @@ function App() {
         setTimeout(() => {
           setLoadGate(1)
           SetDisplayArrayOfUrl(finalArray)
-
           // get the zip
           async function postData(url = '', data = {}) {
             // Default options are marked with *
@@ -173,11 +175,11 @@ function App() {
             });
             // return response.json(); // parses JSON response into native JavaScript objects
           }
-          postData('https://arcane-brook-64097.herokuapp.com/zip', {
+          postData('http://localhost:3001/zip/', {
             files: arrayForZip,
             names: localArrayOfNames
           }).then( response => {
-            window.open('https://arcane-brook-64097.herokuapp.com/zip')
+            window.open('http://localhost:3001/zip/')
           })
         }, 4000);
         return finalArray
