@@ -23,7 +23,7 @@ function App() {
 
   // wake up the backend
   useEffect( () => {
-    axios.get('http://localhost:3001/').then( response => {
+    axios.get('https://arcane-brook-64097.herokuapp.com/').then( response => {
       if (response.data) {
         console.log(response.data)
       }
@@ -175,11 +175,11 @@ function App() {
             });
             // return response.json(); // parses JSON response into native JavaScript objects
           }
-          postData('http://localhost:3001/zip/', {
+          postData('https://arcane-brook-64097.herokuapp.com/zip/', {
             files: arrayForZip,
             names: localArrayOfNames
           }).then( response => {
-            window.open('http://localhost:3001/zip/')
+            window.open('https://arcane-brook-64097.herokuapp.com/zip/')
           })
         }, 4000);
         return finalArray
