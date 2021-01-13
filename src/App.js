@@ -118,7 +118,7 @@ function App() {
         /* Update state */
         // console.log(typeof data)
         // console.log("Data>>>"+data);
-        let myArray = data.split('Awaiting Payment')
+        let myArray = data.split('Draft')
         setArrayOfData(myArray)
     };
     reader.readAsBinaryString(file);
