@@ -116,9 +116,7 @@ function App() {
         /* Convert array of arrays */
         const data = XLSX.utils.sheet_to_csv(ws, {header:1});
         /* Update state */
-        // console.log(typeof data)
-        // console.log("Data>>>"+data);
-        let myArray = data.split('Draft')
+        let myArray = data.split('Awaiting Payment')
         setArrayOfData(myArray)
     };
     reader.readAsBinaryString(file);
