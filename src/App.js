@@ -177,11 +177,11 @@ function App() {
           // https://arcane-brook-64097.herokuapp.com
           console.log('arrayForZip: ', arrayForZip)
           console.log('arrayOfNames: ', localArrayOfNames)
-          postData('https://arcane-brook-64097.herokuapp.com/zip/', {
+          postData('http://localhost:3001/zip/', {
             files: arrayForZip,
             names: localArrayOfNames
           }).then( response => {
-            window.open('https://arcane-brook-64097.herokuapp.com/tester/')
+            window.open('http://localhost:3001/tester/')
           })
         }, 7000);
         return finalArray
