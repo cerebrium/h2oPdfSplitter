@@ -183,7 +183,7 @@ function App() {
           }).then( response => {
             window.open('https://arcane-brook-64097.herokuapp.com/tester/')
           })
-        }, 4000);
+        }, 7000);
         return finalArray
       }
       loopData(arrayForDownloading).then( response => {
