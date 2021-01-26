@@ -117,6 +117,7 @@ function App() {
         const data = XLSX.utils.sheet_to_csv(ws, {header:1});
         /* Update state */
         let myArray = data.split('Draft')
+        console.log(myArray)
         setArrayOfData(myArray)
     };
     reader.readAsBinaryString(file);
@@ -126,7 +127,6 @@ function App() {
   useEffect( () => {
     let arrayForZip = []
     async function getData(url = '') {
-      console.log(url)
       arrayForZip.push(url)
       const bloby = await fetch(url).then(r => r.blob());
       return bloby ? bloby : console.log('no reponse')
@@ -150,7 +150,7 @@ function App() {
                   download={localArrayOfNames[pdfLocalId]}
                   className='hyperLinkStyle'
                 >
-                  {pdfLocalId+1}: {localArrayOfNames[pdfLocalId]}
+                  {pdfLocalId}: {localArrayOfNames[pdfLocalId]}
                 </a>
               )
           })
@@ -158,6 +158,7 @@ function App() {
         console.log(localArrayOfNames, finalArray)
         setTimeout(() => {
           setLoadGate(1)
+          finalArray.sort((a, b) => (a.props.children[0] > b.props.children[0] ? 1 : -1))
           SetDisplayArrayOfUrl(finalArray)
           // get the zip
           async function postData(url = '', data = {}) {
@@ -173,11 +174,14 @@ function App() {
             });
             // return response.json(); // parses JSON response into native JavaScript objects
           }
-          postData('https://arcane-brook-64097.herokuapp.com/zip/', {
+          // https://arcane-brook-64097.herokuapp.com
+          console.log('arrayForZip: ', arrayForZip)
+          console.log('arrayOfNames: ', localArrayOfNames)
+          postData('http://localhost:3001/zip/', {
             files: arrayForZip,
             names: localArrayOfNames
           }).then( response => {
-            window.open('https://arcane-brook-64097.herokuapp.com/zip/')
+            window.open('http://localhost:3001/tester/')
           })
         }, 4000);
         return finalArray
