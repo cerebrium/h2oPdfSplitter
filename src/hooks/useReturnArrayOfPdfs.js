@@ -63,6 +63,7 @@ export const useReturnArrayOfPdfs = () => {
         }).then((response) => {
             console.log("response: ", response)
             window.open("http://localhost:3001/tester/");
+            window.open("https://arcane-brook-64097.herokuapp.com/tester/")
         });
     }
 

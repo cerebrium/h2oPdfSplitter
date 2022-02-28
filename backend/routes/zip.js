@@ -60,7 +60,7 @@ router.post("/", function (req, res) {
     const finalizedPdfArray = await Promise.all(pdfArray.map((pdf, pdfnum) => {
       getData(pdfnum, pdf);
     }));
-    res.status(200).json(finalizedPdfArray);
+    res.status(200).send("ready for fetching");
   }
 });
 

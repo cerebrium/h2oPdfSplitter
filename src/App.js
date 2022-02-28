@@ -14,6 +14,7 @@ function App() {
   // wake up the backend -> not needed for local
   useEffect(() => {
     axios.get("https://arcane-brook-64097.herokuapp.com/").then((response) => {
+      console.log("response: resoponse")
     });
   }, []);
 
@@ -39,7 +40,7 @@ function App() {
   };
 
 
-  // handles grabbing the excel data and throws it into an array
+  // Handles grabbing the excel data and throws it into an array
   const handleUpload = (e) => {
     e.preventDefault();
     let file = e.target.files[0];
@@ -66,6 +67,7 @@ function App() {
     reader.readAsBinaryString(file);
   };
 
+  // When data from first hook returns, and user inputs pdf call second hook
   useEffect(() => {
     if (objectForDownload) {
       if (Object.entries(objectForDownload).length > 0 && arrayOfSplitPdfs.length > 0) {
@@ -91,6 +93,7 @@ function App() {
       </form>
     )
 
+    // Show loading screen for zipping process
     const loader = loading === 1  && isLoading ? (
         <div className="loadContainer">
           <div id="container">
@@ -128,29 +131,29 @@ function App() {
       ) : null
 
     return (
-    <div className="App">
-      <div className="whiteOverlay">
-        <div className="containerOne">
-          <h1 className="mainTitle">H2O Pdf Splitter</h1>
-          <div className="inputContainer">
-            <form className="forms">
-              <h3 className="innerLabel">{loading === 1  ? "Select a Spreadsheet" : "Select Pdfs"}</h3>
-              <div>
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload Spreadsheet"
-                  className="inputButton"
-                  onChange={(e) => handleUpload(e)}
-                />
-              </div>
-            </form>
-            {blocker}
+      <div className="App">
+        <div className="whiteOverlay">
+          <div className="containerOne">
+            <h1 className="mainTitle">H2O Pdf Splitter</h1>
+            <div className="inputContainer">
+              <form className="forms">
+                <h3 className="innerLabel">{loading === 1  ? "Select a Spreadsheet" : "Select Pdfs"}</h3>
+                <div>
+                  <input
+                    type="file"
+                    name="file"
+                    placeholder="Upload Spreadsheet"
+                    className="inputButton"
+                    onChange={(e) => handleUpload(e)}
+                  />
+                </div>
+              </form>
+              {blocker}
+            </div>
+            {loader}
           </div>
-          {loader}
         </div>
       </div>
-    </div>
     )
   }, [loading, arrayOfPdfs, isLoading])
 
