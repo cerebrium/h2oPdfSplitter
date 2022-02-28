@@ -18,5 +18,5 @@ async function postData(url = "", data = {}) {
 }
 
 async function getBlobsOfUrls(url = "") {
-    return await fetch(url).then((r) => r.blob());
+  return await fetch(url).then((r) => r.blob());
 }

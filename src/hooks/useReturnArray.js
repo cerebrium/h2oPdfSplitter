@@ -6,8 +6,6 @@ export const useReturnArray = () => {
 
     // Trigger the hook
     const trigger = (arrayOfData) => {
-        // const finalDisplayArray = []
-        
         // Incoming array of stringified csv
         if (arrayOfData) {
             const finishedObject = {};
@@ -24,20 +22,6 @@ export const useReturnArray = () => {
             setObjectForDownload(finishedObject)
             setLoading(1)
         }
-
-    
-        // Hashmap of stringified csv sorted by driver name
-        // if (finishedObject !== null) {
-            
-        //     for (const key in finishedObject) {
-        //         finalDisplayArray.push(
-        //             <h3 className="nameInList">
-        //                 {key}: {finishedObject[key]}
-        //             </h3>
-        //         )
-        //     }
-        // }
-        console.log("obecjt: ", objectForDownload)
     }
 
     return [trigger, {objectForDownload, loading}]

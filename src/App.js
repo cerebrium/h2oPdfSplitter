@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./App.scss";
 import XLSX from "xlsx";
 import axios from "axios";
-import { requests } from './Requests/Requests'
 import { useReturnArray } from "./hooks/useReturnArray";
 import { useReturnArrayOfPdfs } from "./hooks/useReturnArrayOfPdfs";
 
@@ -22,7 +21,6 @@ function App() {
 
   // pdf part
   const handleUploadpdf = (e) => {
-    console.log("inside here")
     if (e.target.files[0].size > 0) {
       // Create form data
       const data = new FormData();
@@ -36,16 +34,11 @@ function App() {
         )
         .then((response) => {
           if (response.status === 200) {
-            console.log("200 resolved: ", response.data.Files)
             setArrayOfSplitPdfs(response.data.Files);
           }
         });
     }
   };
-
-  useEffect( () => {
-    console.log("object for download: ", objectForDownload)
-  }, [objectForDownload])
 
 
   // handles grabbing the excel data and throws it into an array
@@ -71,16 +64,12 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("objectForDownload: ", objectForDownload)
     if (objectForDownload) {
-
       if (Object.entries(objectForDownload).length > 0 && arrayOfSplitPdfs.length > 0) {
-        console.log("Array of split pdfs: ", arrayOfSplitPdfs, "object for download: ", objectForDownload)
         pdfTrigger(arrayOfSplitPdfs, objectForDownload)
       }
     }
-
-  }, [objectForDownload])
+  }, [objectForDownload, arrayOfSplitPdfs])
 
   const render = useMemo( () => {
     // Block entry of pdf before csv
@@ -128,7 +117,7 @@ function App() {
             </p>
           </div>
         </div>
-      ) : loading === 1 && arrayOfPdfs.length > 0 ? (
+      ) : arrayOfPdfs.length > 0 ? (
         <div className="pdfDownloadContainer">
           <h3 className="innerLabel">Renamed Pdfs</h3>
           {arrayOfPdfs}
@@ -160,7 +149,7 @@ function App() {
       </div>
     </div>
     )
-  }, [blockerDivGate, loading])
+  }, [blockerDivGate, loading, arrayOfPdfs, isLoading])
 
   return (
     <>
