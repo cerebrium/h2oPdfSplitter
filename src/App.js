@@ -1,43 +1,34 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./App.scss";
 import XLSX from "xlsx";
 import axios from "axios";
-
-var objectForDownload = null;
-var arrayForDownload = [];
+import { requests } from './Requests/Requests'
+import { useReturnArray } from "./hooks/useReturnArray";
+import { useReturnArrayOfPdfs } from "./hooks/useReturnArrayOfPdfs";
 
 function App() {
-  const [arrayOfData, setArrayOfData] = useState([]);
-  const [displayArray, setDisplayArray] = useState([]);
-  const [arrayForDownloading, setArrayForDownloading] = useState([]);
-  const [objectForDownloading, setObjectForDownloading] = useState(null);
-  const [downloadGate, setDownloadGate] = useState(false);
-  const [arrayOfUrl, setArrayOfUrl] = useState([]);
-  const [displayArrayOfUrl, SetDisplayArrayOfUrl] = useState([]);
-  const [blockerDiv, setBlockerDiv] = useState(null);
+  const [arrayOfSplitPdfs, setArrayOfSplitPdfs] = useState([]);
   const [blockerDivGate, setBlockerDivGate] = useState(true);
-  const [loader, setLoader] = useState(null);
-  const [loadGate, setLoadGate] = useState(0);
-  const [inputLabel, setInputLabel] = useState("Select a Spreadsheet");
 
-  // wake up the backend
-  useEffect(() => {
-    axios.get("https://arcane-brook-64097.herokuapp.com/").then((response) => {
-      if (response.data) {
-        console.log(response.data);
-      }
-    });
-  }, []);
+  const [trigger, {objectForDownload, loading}] = useReturnArray()
+  const [pdfTrigger, {arrayOfPdfs, isLoading}] = useReturnArrayOfPdfs()
+
+  // wake up the backend -> not needed for local
+  // useEffect(() => {
+  //   axios.get("https://arcane-brook-64097.herokuapp.com/").then((response) => {
+  //   });
+  // }, []);
 
   // pdf part
   const handleUploadpdf = (e) => {
+    console.log("inside here")
     if (e.target.files[0].size > 0) {
-      // create form data
+      // Create form data
       const data = new FormData();
       data.append("file", e.target.files[0]);
 
-      // split it via the api
+      // Split it via the api
       axios
         .post(
           "https://v2.convertapi.com/convert/pdf/to/split?Secret=Ho2xAPDeKwuiTNH7&StoreFile=true",
@@ -45,67 +36,17 @@ function App() {
         )
         .then((response) => {
           if (response.status === 200) {
-            setArrayForDownloading(response.data.Files);
-            arrayForDownload = response.data.Files;
+            console.log("200 resolved: ", response.data.Files)
+            setArrayOfSplitPdfs(response.data.Files);
           }
         });
     }
   };
 
-  useEffect(() => {
-    if (blockerDivGate) {
-      setBlockerDiv(null);
-    } else {
-      setBlockerDiv(
-        <form className="forms">
-          <h3 className="innerLabel">Input Pdf</h3>
-          <div>
-            <input
-              type="file"
-              name="file"
-              placeholder="Upload an image"
-              className="inputButton"
-              onChange={(e) => handleUploadpdf(e)}
-            />
-          </div>
-        </form>
-      );
-    }
-  }, [blockerDivGate]);
+  useEffect( () => {
+    console.log("object for download: ", objectForDownload)
+  }, [objectForDownload])
 
-  // spreadsheet part
-  useEffect(() => {
-    let finishedObject = {};
-    let displayArray = [];
-    if (arrayOfData) {
-      arrayOfData.forEach((row, rowId) => {
-        if (rowId !== 0) {
-          let tempArray = row.match(/\S[^,]+/g);
-          console.log(tempArray);
-          if (tempArray) {
-            finishedObject[tempArray[0]] = tempArray[1].replace(/,/, "");
-          }
-        }
-      });
-    }
-    if (finishedObject !== null) {
-      for (const key in finishedObject) {
-        displayArray.push(
-          <h3 className="nameInList">
-            {key}: {finishedObject[key]}
-          </h3>
-        );
-      }
-    }
-    setDisplayArray(displayArray);
-    setObjectForDownloading(finishedObject);
-    objectForDownload = finishedObject;
-    if (Object.keys(finishedObject).length > 0) {
-      setInputLabel("Spreadsheet Selected");
-      setBlockerDivGate(false);
-      setDownloadGate(true);
-    }
-  }, [arrayOfData]);
 
   // handles grabbing the excel data and throws it into an array
   const handleUpload = (e) => {
@@ -123,87 +64,42 @@ function App() {
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       /* Update state */
-      let myArray = data.split("Draft");
-      console.log(myArray);
-      setArrayOfData(myArray);
+      const arrayOfStringifiedSplitXcelData = data.split("Draft");
+      trigger(arrayOfStringifiedSplitXcelData)
     };
     reader.readAsBinaryString(file);
   };
 
-  // get the pdf after they are split
   useEffect(() => {
-    let arrayForZip = [];
-    async function getData(url = "") {
-      arrayForZip.push(url);
-      const bloby = await fetch(url).then((r) => r.blob());
-      return bloby ? bloby : console.log("no reponse");
-    }
-    if (arrayForDownloading.length > 0) {
-      setLoadGate(2);
-      async function loopData(localArray) {
-        let finalArray = [];
-        let localArrayOfNames = [];
-        for (const key in objectForDownload) {
-          localArrayOfNames.push(`${key} ${objectForDownload[key]}`);
-        }
-        localArray.forEach((pdfLocal, pdfLocalId) => {
-          getData(pdfLocal.Url).then((response) => {
-            let interestingBlob = URL.createObjectURL(response);
+    console.log("objectForDownload: ", objectForDownload)
+    if (objectForDownload) {
 
-            console.log(interestingBlob);
-            finalArray.push(
-              <a
-                href={interestingBlob}
-                download={localArrayOfNames[pdfLocalId]}
-                className="hyperLinkStyle"
-              >
-                {pdfLocalId}: {localArrayOfNames[pdfLocalId]}
-              </a>
-            );
-          });
-        });
-        console.log(localArrayOfNames, finalArray);
-        setTimeout(() => {
-          setLoadGate(1);
-          finalArray.sort((a, b) =>
-            a.props.children[0] > b.props.children[0] ? 1 : -1
-          );
-          SetDisplayArrayOfUrl(finalArray);
-          // get the zip
-          async function postData(url = "", data = {}) {
-            // Default options are marked with *
-            const response = await fetch(url, {
-              method: "POST", // *GET, POST, PUT, DELETE, etc.
-              mode: "cors", // no-cors, *cors, same-origin
-              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-            // return response.json(); // parses JSON response into native JavaScript objects
-          }
-          // https://arcane-brook-64097.herokuapp.com
-          console.log("arrayForZip: ", arrayForZip);
-          console.log("arrayOfNames: ", localArrayOfNames);
-          postData("http://localhost:3001/zip/", {
-            files: arrayForZip,
-            names: localArrayOfNames,
-          }).then((response) => {
-            window.open("http://localhost:3001/tester/");
-          });
-        }, 7000);
-        return finalArray;
+      if (Object.entries(objectForDownload).length > 0 && arrayOfSplitPdfs.length > 0) {
+        console.log("Array of split pdfs: ", arrayOfSplitPdfs, "object for download: ", objectForDownload)
+        pdfTrigger(arrayOfSplitPdfs, objectForDownload)
       }
-      loopData(arrayForDownloading).then((response) => {
-        console.log(response);
-      });
     }
-  }, [arrayForDownloading]);
 
-  useEffect(() => {
-    if (loadGate === 2) {
-      setLoader(
+  }, [objectForDownload])
+
+  const render = useMemo( () => {
+    // Block entry of pdf before csv
+    const blocker = Object.entries(objectForDownload).length === 0? null : (
+      <form className="forms">
+        <h3 className="innerLabel">Input Pdf</h3>
+        <div>
+          <input
+            type="file"
+            name="file"
+            placeholder="Upload an image"
+            className="inputButton"
+            onChange={(e) => handleUploadpdf(e)}
+          />
+        </div>
+      </form>
+    )
+
+    const loader = loading === 1  && isLoading ? (
         <div className="loadContainer">
           <div id="container">
             <div className="divider" aria-hidden="true"></div>
@@ -232,27 +128,21 @@ function App() {
             </p>
           </div>
         </div>
-      );
-    } else if (loadGate === 1) {
-      setLoader(
+      ) : loading === 1 && arrayOfPdfs.length > 0 ? (
         <div className="pdfDownloadContainer">
           <h3 className="innerLabel">Renamed Pdfs</h3>
-          {displayArrayOfUrl}
+          {arrayOfPdfs}
         </div>
-      );
-    } else {
-      setLoader(null);
-    }
-  }, [displayArrayOfUrl, loadGate]);
+      ) : null
 
-  return (
+    return (
     <div className="App">
       <div className="whiteOverlay">
         <div className="containerOne">
           <h1 className="mainTitle">H2O Pdf Splitter</h1>
           <div className="inputContainer">
             <form className="forms">
-              <h3 className="innerLabel">{inputLabel}</h3>
+              <h3 className="innerLabel">{loading === 1  ? "Select a Spreadsheet" : "Select Pdfs"}</h3>
               <div>
                 <input
                   type="file"
@@ -263,12 +153,19 @@ function App() {
                 />
               </div>
             </form>
-            {blockerDiv}
+            {blocker}
           </div>
           {loader}
         </div>
       </div>
     </div>
+    )
+  }, [blockerDivGate, loading])
+
+  return (
+    <>
+      {render}
+    </>
   );
 }
 
