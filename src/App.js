@@ -12,10 +12,10 @@ function App() {
   const [pdfTrigger, {arrayOfPdfs, isLoading}] = useReturnArrayOfPdfs()
 
   // wake up the backend -> not needed for local
-  // useEffect(() => {
-  //   axios.get("https://arcane-brook-64097.herokuapp.com/").then((response) => {
-  //   });
-  // }, []);
+  useEffect(() => {
+    axios.get("https://arcane-brook-64097.herokuapp.com/").then((response) => {
+    });
+  }, []);
 
   // Upload and split PDF's
   const handleUploadpdf = (e) => {
