@@ -138,7 +138,7 @@ function App() {
             <h1 className="mainTitle">H2O Pdf Splitter</h1>
             <div className="inputContainer">
               <form className="forms">
-                <h3 className="innerLabel">{loading === 1  ? "Select a Spreadsheet" : "Select Pdfs"}</h3>
+                <h3 className="innerLabel">Select a Spreadsheet</h3>
                 <div>
                   <input
                     type="file"
