@@ -130,6 +130,7 @@ function App() {
         </div>
       ) : null
 
+      // Content
     return (
       <div className="App">
         <div className="whiteOverlay">

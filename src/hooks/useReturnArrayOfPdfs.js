@@ -56,15 +56,20 @@ export const useReturnArrayOfPdfs = () => {
         setIsLoading(false)
 
         // https://arcane-brook-64097.herokuapp.com -> production backend
-        // Attempt to zip the file
+        // Attempt to zip the file --> local
         requests.post("http://localhost:3001/zip/", {
             files: arrayForZip,
             names: localArrayOfNames,
         }).then((response) => {
             console.log("response: ", response)
             window.open("http://localhost:3001/tester/");
-            window.open("https://arcane-brook-64097.herokuapp.com/tester/")
         });
+
+        // Attempt to access zip prod be
+        // requests.post('https://arcane-brook-64097.herokuapp.com', {
+        //     files: arrayForZip,
+        //     names: localArrayOfNames,
+        // }).
     }
 
     return [pdfTrigger, {arrayOfPdfs, isLoading}]
