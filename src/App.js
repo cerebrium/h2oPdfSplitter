@@ -8,8 +8,6 @@ import { useReturnArrayOfPdfs } from "./hooks/useReturnArrayOfPdfs";
 
 function App() {
   const [arrayOfSplitPdfs, setArrayOfSplitPdfs] = useState([]);
-  const [blockerDivGate, setBlockerDivGate] = useState(true);
-
   const [trigger, {objectForDownload, loading}] = useReturnArray()
   const [pdfTrigger, {arrayOfPdfs, isLoading}] = useReturnArrayOfPdfs()
 
@@ -19,7 +17,7 @@ function App() {
   //   });
   // }, []);
 
-  // pdf part
+  // Upload and split PDF's
   const handleUploadpdf = (e) => {
     if (e.target.files[0].size > 0) {
       // Create form data
@@ -48,16 +46,21 @@ function App() {
     const reader = new FileReader();
     reader.onload = (evt) => {
       // evt = on_file_select event
-      /* Parse data */
+      /* Convert to byte stream */
       const bstr = evt.target.result;
       const wb = XLSX.read(bstr, { type: "binary" });
+
       /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
-      /* Convert array of arrays */
+
+      /* If not csv, convert to csv */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
-      /* Update state */
+
+      /* Split each item into an array based on last expected field */
       const arrayOfStringifiedSplitXcelData = data.split("Draft");
+
+      // Call hook to get names from the split csv
       trigger(arrayOfStringifiedSplitXcelData)
     };
     reader.readAsBinaryString(file);
@@ -149,7 +152,7 @@ function App() {
       </div>
     </div>
     )
-  }, [blockerDivGate, loading, arrayOfPdfs, isLoading])
+  }, [loading, arrayOfPdfs, isLoading])
 
   return (
     <>
