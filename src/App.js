@@ -30,7 +30,7 @@ function App() {
     });
   }, []);
 
-  // Upload and split PDF's
+  // pdf part
   const handleUploadpdf = (e) => {
     if (e.target.files[0].size > 0) {
       // create form data
@@ -40,7 +40,7 @@ function App() {
       // split it via the api
       axios
         .post(
-          "https://v2.convertapi.com/convert/pdf/to/split?Secret=LWvPUHAaYjdklEQ7&StoreFile=true",
+          "https://v2.convertapi.com/convert/pdf/to/split?Secret=Ho2xAPDeKwuiTNH7&StoreFile=true",
           data
         )
         .then((response) => {
@@ -265,6 +265,7 @@ function App() {
             </form>
             {blockerDiv}
           </div>
+          {loader}
         </div>
       </div>
     </div>
