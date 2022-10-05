@@ -40,7 +40,7 @@ function App() {
       // split it via the api
       axios
         .post(
-          "https://v2.convertapi.com/convert/pdf/to/split?Secret=Ho2xAPDeKwuiTNH7&StoreFile=true",
+          "https://v2.convertapi.com/convert/pdf/to/split?Secret=j5xfxIhJ05DzvKoR&StoreFile=true",
           data
         )
         .then((response) => {
